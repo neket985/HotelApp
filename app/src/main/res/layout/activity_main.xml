@@ -18,19 +18,68 @@
             android:layout_height="50px"
             android:orientation="horizontal">
             <EditText
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:hint="Введите название гостиницы"
+                android:hint="Название гостиницы"
                 android:textSize="16px"
-                android:id="@+id/search_string"/>
+                android:id="@+id/search_string"
+                android:layout_weight="0.8"/>
 
             <ImageView
                 android:contentDescription="@string/app_name"
-                android:layout_width="50px"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/img1"
                 android:scaleType="fitCenter"
-                android:id="@+id/serchbtn"/>
+                android:id="@+id/serchbtn"
+                android:layout_weight="0.2"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Подбор гостиницы по параметрам"
+            android:textSize="18dp"
+            android:textAlignment="center"
+            android:paddingBottom="20dp"/>
+        <LinearLayout
+            android:paddingBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Город: "
+                android:textAlignment="center"
+                android:layout_weight="0.4" />
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:textSize="16px"
+                android:hint="Название города"
+                android:layout_gravity="center"
+                android:layout_weight="0.6"/>
+        </LinearLayout>
+        <LinearLayout
+            android:paddingBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Колличество мест: "
+                android:textAlignment="center"
+                android:layout_weight="0.4" />
+
+            <Spinner
+                android:textAlignment="center"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.6"
+                android:entries="@array/farang">
+
+            </Spinner>
         </LinearLayout>
         <TextView
             android:layout_width="match_parent"
