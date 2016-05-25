@@ -22,7 +22,7 @@
             <AutoCompleteTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:hint="Название гостиницы"
+                android:hint="Поиск гостиницы по названию"
                 android:textSize="16px"
                 android:id="@+id/search_string"
                 android:layout_weight="0.8"
@@ -56,7 +56,8 @@
                 android:layout_height="match_parent"
                 android:text="Город: "
                 android:textAlignment="center"
-                android:layout_weight="0.4" />
+                android:layout_weight="0.4"
+                android:gravity="center"/>
             <AutoCompleteTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -79,7 +80,8 @@
                 android:layout_height="match_parent"
                 android:text="Колличество человек: "
                 android:textAlignment="center"
-                android:layout_weight="0.4" />
+                android:layout_weight="0.4"
+                android:gravity="center"/>
             <Spinner
                 android:id="@+id/spin_farang"
                 android:textAlignment="center"
@@ -124,7 +126,8 @@
                         android:layout_weight="0.3"
                         android:textSize="14dp"
                         android:id="@+id/dateAt"
-                        android:textColor="@color/calendarText"/>
+                        android:textColor="@color/calendarText"
+                        android:textAlignment="center"/>
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -148,7 +151,8 @@
                         android:layout_weight="0.3"
                         android:textSize="14dp"
                         android:id="@+id/dateTo"
-                        android:textColor="@color/calendarText"/>
+                        android:textColor="@color/calendarText"
+                        android:textAlignment="center"/>
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -170,7 +174,8 @@
                 android:layout_height="match_parent"
                 android:text="Цена от "
                 android:textAlignment="center"
-                android:layout_weight="0.4" />
+                android:layout_weight="0.4"
+                android:gravity="center"/>
              <EditText
                  android:layout_width="0dp"
                  android:layout_height="wrap_content"
@@ -182,7 +187,8 @@
                 android:layout_height="match_parent"
                 android:text="до"
                 android:textAlignment="center"
-                android:layout_weight="0.2" />
+                android:layout_weight="0.2"
+                android:gravity="center"/>
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -190,7 +196,7 @@
                 android:textSize="14dp"
                 android:inputType="number"/>
         </LinearLayout>
-        <!-- Категория -->
+        <!-- Категория
         <LinearLayout
             android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
@@ -201,7 +207,8 @@
                 android:layout_height="match_parent"
                 android:text="Категория: "
                 android:textAlignment="center"
-                android:layout_weight="0.4" />
+                android:layout_weight="0.4"
+                android:gravity="center"/>
 
             <Spinner
                 android:id="@+id/spin_katefory"
@@ -213,6 +220,7 @@
 
             </Spinner>
         </LinearLayout>
+        -->
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
