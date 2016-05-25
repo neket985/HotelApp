@@ -3,6 +3,8 @@ package com.example.nikitos.hotelapp;
 import com.google.gson.*;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -16,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,11 +34,21 @@ public class MainActivity extends AppCompatActivity {
     EditText search_str;
     Spinner spin_farang;
     Button sendForm;
+    TextView dateAt;
+    TextView dateTo;
 
     AutoCompleteTextView AutoCompleteCities;
     String[] citiesWithid = { "Moscow :1", "France :2", "Germany :3"};
     String[] cities;
     String[] cityId;
+    int DIALOG_DATE1 = 1;
+    int DIALOG_DATE2 = 2;
+    int myYear1 = 2016;
+    int myMonth1 = 01;
+    int myDay1 = 01;
+    int myYear2 = 2016;
+    int myMonth2 = 01;
+    int myDay2 = 01;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         search_str = (EditText)findViewById(R.id.search_string);
         spin_farang = (Spinner)findViewById(R.id.spin_farang);
         sendForm = (Button)findViewById(R.id.send_form);
+        dateAt = (TextView)findViewById(R.id.dateAt);
+        dateTo = (TextView)findViewById(R.id.dateTo);
 
 
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, cities);
@@ -86,8 +101,47 @@ public class MainActivity extends AppCompatActivity {
         sendForm.setOnClickListener(oclFormBtn);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
+    public void calendar1 (View view){
+        showDialog(DIALOG_DATE1);
     }
+    public void calendar2 (View view){
+        myYear2 = myYear1;
+        myMonth2 = myMonth1;
+        myDay2 = myDay1;
+        showDialog(DIALOG_DATE2);
+
+    }
+
+    protected Dialog onCreateDialog(int id) {
+        if (id == DIALOG_DATE1) {
+            DatePickerDialog tpd = new DatePickerDialog(this, myCallBack1, myYear1, myMonth1, myDay1);
+            return tpd;
+        }
+        else if (id == DIALOG_DATE2) {
+            DatePickerDialog tpd = new DatePickerDialog(this, myCallBack2, myYear2, myMonth2, myDay2);
+            return tpd;
+        }
+        return super.onCreateDialog(id);
+    }
+
+    DatePickerDialog.OnDateSetListener myCallBack1 = new DatePickerDialog.OnDateSetListener() {
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            myYear1 = year;
+            myMonth1 = monthOfYear;
+            myDay1 = dayOfMonth;
+            dateAt.setText(myDay1 + "." + myMonth1 + "." + myYear1);
+        }
+    };
+    DatePickerDialog.OnDateSetListener myCallBack2 = new DatePickerDialog.OnDateSetListener() {
+
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            myYear2 = year;
+            myMonth2 = monthOfYear;
+            myDay2 = dayOfMonth;
+            dateTo.setText(myDay2 + "." + myMonth2 + "." + myYear2);
+        }
+    };
 }
