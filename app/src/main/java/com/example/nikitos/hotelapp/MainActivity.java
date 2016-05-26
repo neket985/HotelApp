@@ -5,6 +5,7 @@ import com.google.gson.*;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -96,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
                 selectCity[0] = AutoCompleteCities.getText().toString();
                 selectNumFarang[0] = spin_farang.getSelectedItem().toString();
                 tv.setText(selectCity[0]+" "+selectNumFarang[0]);
+                Intent intent = new Intent(MainActivity.this, search_result.class);
+                startActivity(intent);
             }
         };
         sendForm.setOnClickListener(oclFormBtn);
