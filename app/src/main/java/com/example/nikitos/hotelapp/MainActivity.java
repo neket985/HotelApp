@@ -3,9 +3,14 @@ package com.example.nikitos.hotelapp;
 import com.google.gson.*;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -25,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -37,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Button sendForm;
     TextView dateAt;
     TextView dateTo;
+    Context context = MainActivity.this;
 
     AutoCompleteTextView AutoCompleteCities;
     String[] citiesWithid = { "Moscow :1", "France :2", "Germany :3"};
@@ -75,11 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, cities);
         AutoCompleteCities.setAdapter(adapter1);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
         final String[] searchReq = new String[1];
         final String[] selectNumFarang = new String[1];
         final String[] selectCity = new String[1];
@@ -96,12 +99,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 selectCity[0] = AutoCompleteCities.getText().toString();
                 selectNumFarang[0] = spin_farang.getSelectedItem().toString();
-                tv.setText(selectCity[0]+" "+selectNumFarang[0]);
+                tv.setText(selectCity[0] + " " + selectNumFarang[0]);
+                showDialog(0);
+
                 Intent intent = new Intent(MainActivity.this, search_result.class);
                 startActivity(intent);
             }
         };
         sendForm.setOnClickListener(oclFormBtn);
+
     }
 
     public void calendar1 (View view){
@@ -112,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
         myMonth2 = myMonth1;
         myDay2 = myDay1;
         showDialog(DIALOG_DATE2);
-
     }
 
     protected Dialog onCreateDialog(int id) {
@@ -147,4 +152,56 @@ public class MainActivity extends AppCompatActivity {
             dateTo.setText(myDay2 + "." + myMonth2 + "." + myYear2);
         }
     };
+
+
+/*    protected Dialog onCreateDialog(int id, Bundle args) {
+        final int[] choose = {-1};
+        final String[] chooseVariant = { "Васька", "Рыжик", "Мурзик" };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("Выберите способ расселения")
+                .setCancelable(false)
+
+                        // добавляем одну кнопку для закрытия диалога
+                .setNegativeButton("Назад",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int item) {
+                                dialog.cancel();
+                            }
+                        })
+                .setPositiveButton("Далее",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                if(choose[0] ==-1) {
+                                    Toast.makeText(getApplicationContext()
+                                            , "Вы ничего не выбрали",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    Intent intent = new Intent(MainActivity.this, search_result.class);
+                                    startActivity(intent);
+                                }
+
+                            }
+                        })
+
+        // добавляем переключатели
+                .setSingleChoiceItems(chooseVariant, -1,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int item) {
+                                Toast.makeText(
+                                        getApplicationContext(),
+                                        "Ваш выбор: "
+                                                + chooseVariant[item],
+                                        Toast.LENGTH_SHORT).show();
+                                choose[0] = item;
+                            }
+                        });
+        return builder.create();
+    }*/
 }
+//Параметры для запроса: "идентификатор горда", "количество мест в номере", "дата заезда", "дата выезда", "Минимальная цена", "Максимальная цена"

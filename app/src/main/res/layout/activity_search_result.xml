@@ -10,9 +10,7 @@
     tools:context="com.example.nikitos.hotelapp.search_result">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="match_parent"
         android:id="@+id/fragment_list"
-        android:orientation="vertical">
-
-    </LinearLayout>
+        android:orientation="vertical"/>
 </LinearLayout>

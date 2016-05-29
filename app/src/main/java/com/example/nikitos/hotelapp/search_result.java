@@ -18,8 +18,10 @@ public class search_result extends AppCompatActivity {
                 .beginTransaction();
 
         // добавляем фрагмент
-        searchResultFragment myFragment = new searchResultFragment();
-        fragmentTransaction.add(R.id.fragment_list, myFragment);
+        for(int i=0;i<10;++i) {
+            searchResultFragment myFragment = new searchResultFragment();
+            fragmentTransaction.add(R.id.fragment_list, myFragment);
+        }
         fragmentTransaction.commit();
     }
 }
