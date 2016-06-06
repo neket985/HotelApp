@@ -19,7 +19,7 @@ import android.widget.TextView;
  */
 public class searchResultFragment extends Fragment {
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceStates) {
         Context context = getActivity().getApplicationContext();
         LinearLayout layout = new LinearLayout(context);
         LinearLayout insideLay1 = new LinearLayout(context);
@@ -65,4 +65,6 @@ public class searchResultFragment extends Fragment {
         layout.addView(insideLay2);
         return layout;
     }
+
+
 }

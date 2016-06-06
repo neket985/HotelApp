@@ -2,6 +2,7 @@ package com.example.nikitos.hotelapp;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -11,6 +12,7 @@ public class search_result extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
+        Intent intnt = getIntent();
 
         // получаем экземпляр FragmentTransaction
         FragmentManager fragmentManager = getFragmentManager();
@@ -20,7 +22,9 @@ public class search_result extends AppCompatActivity {
         // добавляем фрагмент
         for(int i=0;i<10;++i) {
             searchResultFragment myFragment = new searchResultFragment();
-            fragmentTransaction.add(R.id.fragment_list, myFragment);
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.add(R.id.fragment_list, myFragment);
+            ft.commit();
         }
         fragmentTransaction.commit();
     }

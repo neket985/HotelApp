@@ -1,6 +1,6 @@
 package com.example.nikitos.hotelapp;
 
-import com.google.gson.*;
+//import com.google.gson.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
                 showDialog(0);
 
                 Intent intent = new Intent(MainActivity.this, search_result.class);
+                intent.putExtra("city", selectCity[0]);
+                intent.putExtra("numFarang", selectNumFarang[0]);
                 startActivity(intent);
             }
         };
