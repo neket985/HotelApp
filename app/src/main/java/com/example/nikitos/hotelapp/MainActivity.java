@@ -103,8 +103,10 @@ public class MainActivity extends AppCompatActivity {
                 showDialog(0);
 
                 Intent intent = new Intent(MainActivity.this, search_result.class);
-                intent.putExtra("city", selectCity[0]);
-                intent.putExtra("numFarang", selectNumFarang[0]);
+                String str = "hello world!!!";
+                intent.putExtra("GET", str);
+                //intent.putExtra("city", selectCity[0]);
+                //intent.putExtra("numFarang", selectNumFarang[0]);
                 startActivity(intent);
             }
         };
