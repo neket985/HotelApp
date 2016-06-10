@@ -26,8 +26,7 @@
                 android:textSize="16px"
                 android:id="@+id/search_string"
                 android:layout_weight="0.8"
-                android:completionThreshold="1"
-                android:inputType="textAutoComplete"/>
+                android:completionThreshold="1"/>
 
             <ImageView
                 android:contentDescription="@string/app_name"

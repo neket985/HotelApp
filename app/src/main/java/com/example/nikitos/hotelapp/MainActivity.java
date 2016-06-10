@@ -1,6 +1,6 @@
 package com.example.nikitos.hotelapp;
 
-//import com.google.gson.*;
+import com.google.gson.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,10 +33,55 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static String getHTML(String urlToRead) {
+        URL url;
+        HttpURLConnection conn;
+        BufferedReader rd;
+        String line;
+        String result = "";
+        try {
+            url = new URL(urlToRead);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = rd.readLine()) != null) {
+                result += line;
+            }
+            rd.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static String getIdFromTitle(JsonArray jsArr, String equalStr){
+        String str;
+        int i=0;
+        for(;i<jsArr.size();++i){
+            if (equalStr.equals(jsArr.get(i).getAsJsonObject().get("title").getAsString())){
+                break;
+            }
+        }
+        str = jsArr.get(i).getAsJsonObject().get("id").getAsString();
+        return str;
+    }
+    public static String[] getListCities (JsonArray jsArr){
+        String [] str = new String[jsArr.size()];
+        for(int i=0;i<jsArr.size();++i){
+            str[i] = jsArr.get(i).getAsJsonObject().get("title").getAsString();
+        }
+        return str;
+    }
+
+    myTask mt;
     TextView tv;
     ImageView searchbtn;
     EditText search_str;
@@ -46,9 +92,9 @@ public class MainActivity extends AppCompatActivity {
     Context context = MainActivity.this;
 
     AutoCompleteTextView AutoCompleteCities;
-    String[] citiesWithid = { "Moscow :1", "France :2", "Germany :3"};
+    JsonArray js;
+    String mainReq;
     String[] cities;
-    String[] cityId;
     int DIALOG_DATE1 = 1;
     int DIALOG_DATE2 = 2;
     int myYear1 = 2016;
@@ -63,12 +109,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        cities = new String[citiesWithid.length];
-        cityId = new String[citiesWithid.length];
-        for(int i=0;i<citiesWithid.length;++i){
-            cities[i] = citiesWithid[i].substring(0, citiesWithid[i].indexOf(':')-1);
-            cityId[i] = citiesWithid[i].substring(citiesWithid[i].indexOf(':')+1);
-        }
+        mt = new myTask();
+        mt.execute();
 
         AutoCompleteCities = (AutoCompleteTextView) findViewById(R.id.Cities);
         tv = (TextView)findViewById(R.id.tv);
@@ -79,40 +121,73 @@ public class MainActivity extends AppCompatActivity {
         dateAt = (TextView)findViewById(R.id.dateAt);
         dateTo = (TextView)findViewById(R.id.dateTo);
 
-
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, cities);
-        AutoCompleteCities.setAdapter(adapter1);
-
-        final String[] searchReq = new String[1];
-        final String[] selectNumFarang = new String[1];
-        final String[] selectCity = new String[1];
-        final View.OnClickListener oclSrchImg = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchReq[0] = search_str.getText().toString();
-                tv.setText(searchReq[0]);
-            }
-        };
-        searchbtn.setOnClickListener(oclSrchImg);
-        View.OnClickListener oclFormBtn = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectCity[0] = AutoCompleteCities.getText().toString();
-                selectNumFarang[0] = spin_farang.getSelectedItem().toString();
-                tv.setText(selectCity[0] + " " + selectNumFarang[0]);
-                showDialog(0);
-
-                Intent intent = new Intent(MainActivity.this, search_result.class);
-                String str = "hello world!!!";
-                intent.putExtra("GET", str);
-                //intent.putExtra("city", selectCity[0]);
-                //intent.putExtra("numFarang", selectNumFarang[0]);
-                startActivity(intent);
-            }
-        };
-        sendForm.setOnClickListener(oclFormBtn);
-
     }
+
+    class myTask extends AsyncTask <Void, Void, Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mainReq = getHTML("http://h4y.ru:8480/mobile-booking/");
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            JsonParser parser = new JsonParser();
+            js = parser.parse(mainReq).getAsJsonArray();
+            cities = getListCities(js);
+
+            ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(context, R.layout.support_simple_spinner_dropdown_item, cities);
+            AutoCompleteCities.setAdapter(adapter1);
+
+            final String[] searchReq = new String[1];
+            final String[] selectNumFarang = new String[1];
+            final View.OnClickListener oclSrchImg = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchReq[0] = search_str.getText().toString();
+                }
+            };
+            searchbtn.setOnClickListener(oclSrchImg);
+            View.OnClickListener oclFormBtn = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String cityId = getIdFromTitle(js, AutoCompleteCities.getText().toString());
+                    selectNumFarang[0] = spin_farang.getSelectedItem().toString();
+
+                    Intent intent = new Intent(MainActivity.this, search_result.class);
+                    intent.putExtra("cityId", cityId);
+                    startActivity(intent);
+                }
+            };
+            sendForm.setOnClickListener(oclFormBtn);
+        }
+    }
+
+//    private void initMyArray() {
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                mainReq = getHTML("http://h4y.ru:8480/mobile-booking/");
+//                parser = new JsonParser();
+//                js = parser.parse(mainReq).getAsJsonArray();
+//                cities = getListCities(js);
+//            }
+//        });
+//        thread.start();
+//        int i = 0;
+//        while (thread.isAlive()){
+//            Log.i("Бред, не делай так ниеогда", String.valueOf(i++));
+//        }
+//        for(JsonElement obj : js){
+//            Log.i("ГОРОД", obj.toString());
+//        }
+//    }
 
     public void calendar1 (View view){
         showDialog(DIALOG_DATE1);
