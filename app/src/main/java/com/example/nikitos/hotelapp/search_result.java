@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 public class search_result extends AppCompatActivity {
 
+    int countHotels = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,8 +26,8 @@ public class search_result extends AppCompatActivity {
 
     private String[] getDataSet() {
 
-        String[] mDataSet = new String[100];
-        for (int i = 0; i < 100; i++) {
+        String[] mDataSet = new String[countHotels];
+        for (int i = 0; i < countHotels; i++) {
             mDataSet[i] = "Hotel" + i + "&";
             for(int j=-1;j<(i%5);++j){
                 mDataSet[i] += "*";
