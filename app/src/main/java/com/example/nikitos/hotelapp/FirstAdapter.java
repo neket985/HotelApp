@@ -3,6 +3,7 @@ package com.example.nikitos.hotelapp;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
@@ -30,6 +31,7 @@ public class FirstAdapter extends BaseAdapter {
     String str;
     String s3;
     ViewHolder viewHolder;
+    Bitmap image;
 
     public static void fetchImage(final String iUrl, final ImageView iView) {
         if ( iUrl == null || iView == null ) {
@@ -134,13 +136,15 @@ public class FirstAdapter extends BaseAdapter {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            fetchImage("http://www.h4y.ru/images/x100x100/" + s3, viewHolder.image);
+            image = downloadImage("http://www.h4y.ru/images/x100x100/" + s3);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            viewHolder.image.setImageBitmap(image);
+            Log.w(TAG, "it's ok");
         }
     }
 
