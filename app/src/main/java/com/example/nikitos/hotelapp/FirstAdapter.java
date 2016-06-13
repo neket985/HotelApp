@@ -14,6 +14,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -25,56 +27,11 @@ import java.net.URL;
  */
 public class FirstAdapter extends BaseAdapter {
 
-    private final static String TAG = "ImageManager";
     private Context mContext;
     private String[] mData;
     String str;
     String s3;
     ViewHolder viewHolder;
-    Bitmap image;
-
-    public static void fetchImage(final String iUrl, final ImageView iView) {
-        if ( iUrl == null || iView == null ) {
-            Log.e(TAG, "error");
-            return;
-        }
-
-        final Bitmap image = downloadImage(iUrl);
-        iView.setImageBitmap(image);
-        Log.w(TAG, "it's ok");
-    }
-
-    public static Bitmap downloadImage(String iUrl) {
-        Bitmap bitmap = null;
-        HttpURLConnection conn = null;
-        BufferedInputStream buf_stream = null;
-        try {
-            Log.v(TAG, "Starting loading image by URL: " + iUrl);
-            conn = (HttpURLConnection) new URL(iUrl).openConnection();
-            conn.setDoInput(true);
-            conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.connect();
-            buf_stream = new BufferedInputStream(conn.getInputStream(), 8192);
-            bitmap = BitmapFactory.decodeStream(buf_stream);
-            buf_stream.close();
-            conn.disconnect();
-            buf_stream = null;
-            conn = null;
-        } catch (MalformedURLException ex) {
-            Log.e(TAG, "Url parsing was failed: " + iUrl);
-        } catch (IOException ex) {
-            Log.d(TAG, iUrl + " does not exists");
-        } catch (OutOfMemoryError e) {
-            Log.w(TAG, "Out of memory!!!");
-            return null;
-        } finally {
-            if ( buf_stream != null )
-                try { buf_stream.close(); } catch (IOException ex) {}
-            if ( conn != null )
-                conn.disconnect();
-        }
-        return bitmap;
-    }
 
     public FirstAdapter(Context context, String[] objects) {
         mContext = context;
@@ -111,42 +68,23 @@ public class FirstAdapter extends BaseAdapter {
         }
         str = getItem(position);
 
-        myTask3 mt = new myTask3();
-        mt.execute();
+        String s1 = str.substring(0, str.indexOf('&'));
+        str = str.substring(str.indexOf('&') + 1, str.length());
+        String s2 = str.substring(0, str.indexOf('&'));
+        str = str.substring(str.indexOf('&') + 1, str.length());
+        s3 = str.substring(0, str.indexOf('&'));
+        String s4 = str.substring(str.indexOf('&') + 1, str.length());
+        viewHolder.txtItem1.setText(s1);
+        viewHolder.txtItem2.setText(s2);
+        viewHolder.txtItem3.setText(s4);
+        Picasso.with(mContext)
+                .load("http://www.h4y.ru/images/x100/" + s3)
+                .placeholder(R.drawable.icon_nullspace)
+                .into(viewHolder.image);
 
         return convertView;
     }
 
-    public class myTask3 extends AsyncTask <Void, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            String s1 = str.substring(0, str.indexOf('&'));
-            str = str.substring(str.indexOf('&') + 1, str.length());
-            String s2 = str.substring(0, str.indexOf('&'));
-            str = str.substring(str.indexOf('&') + 1, str.length());
-            s3 = str.substring(0, str.indexOf('&'));
-            String s4 = str.substring(str.indexOf('&') + 1, str.length());
-            viewHolder.txtItem1.setText(s1);
-            viewHolder.txtItem2.setText(s2);
-            viewHolder.txtItem3.setText(s4);
-            viewHolder.image.setImageResource(R.drawable.icon_nullspace);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            image = downloadImage("http://www.h4y.ru/images/x100x100/" + s3);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            viewHolder.image.setImageBitmap(image);
-            Log.w(TAG, "it's ok");
-        }
-    }
 
     @Override
     public long getItemId(int i) {

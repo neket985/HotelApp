@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Hotel App</string>
+    <string name="imageName">image</string>
     <string-array name="stars">
         <item>-</item>
         <item>*****</item>

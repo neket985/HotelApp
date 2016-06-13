@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -34,6 +35,7 @@ public class search_result extends AppCompatActivity {
     String mainStr;
     JsonArray jsArr;
     int countHotels = 100;
+    ProgressBar prbr;
 
     public static String getHTML(String urlToRead) {
         URL url;
@@ -63,6 +65,7 @@ public class search_result extends AppCompatActivity {
 
         Intent intnt = getIntent();
         cityId = intnt.getStringExtra("cityId");
+        prbr = (ProgressBar) findViewById(R.id.progressBar1);
 
         myTask2 mt = new myTask2();
         mt.execute();
@@ -91,12 +94,12 @@ public class search_result extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            prbr.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mainStr = getHTML("http://h4y.ru:8480/mobile-booking/region/"+cityId);
-            //fetchImage("http://www.h4y.ru/images/x100x100/10172.jpg", imgv);
+            mainStr = getHTML("http://api.h4y.ru/mobile-booking/region/"+cityId);
             return null;
         }
 
@@ -104,6 +107,7 @@ public class search_result extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+            prbr.setVisibility(View.INVISIBLE);
             JsonParser prsr = new JsonParser();
             jsArr = prsr.parse(mainStr).getAsJsonArray();
             countHotels = jsArr.size();
@@ -119,6 +123,7 @@ public class search_result extends AppCompatActivity {
                             + id);
                     Intent intent1 = new Intent(search_result.this, detailActivity.class);
                     intent1.putExtra("hotelId", jsArr.get((int)id).getAsJsonObject().get("id").getAsString());
+                    intent1.putExtra("image", jsArr.get((int)id).getAsJsonObject().get("icon").getAsString());
                     startActivity(intent1);
                 }
             });
