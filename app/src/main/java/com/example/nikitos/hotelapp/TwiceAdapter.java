@@ -53,12 +53,11 @@ public class TwiceAdapter extends BaseAdapter {
         str = getItem(position);
 
 
-        //String s1 = str.substring(0, str.indexOf('&'));
-        //str = str.substring(str.indexOf('&') + 1, str.length());
-        //String s2 = str.substring(0, str.indexOf('&'));
-        viewHolder.txtItem1.setText(str);
+        String s1 = str.substring(0, str.indexOf('&'));
+        str = str.substring(str.indexOf('&') + 1, str.length());
+        viewHolder.txtItem1.setText(s1);
         Picasso.with(mContext)
-                .load("http://www.h4y.ru/images/x100/"/* + s2*/)
+                .load("http://www.h4y.ru/images/x100/" + str)
                 .placeholder(R.drawable.icon_nullspace)
                 .into(viewHolder.image);
 

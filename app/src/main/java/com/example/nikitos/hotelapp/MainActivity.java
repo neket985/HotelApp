@@ -77,8 +77,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-        str = jsArr.get(i).getAsJsonObject().get(gettingParam).getAsString();
-        return str;
+        try {
+            str = jsArr.get(i).getAsJsonObject().get(gettingParam).getAsString();
+            return str;
+        }
+        catch (Exception e){
+            return null;
+        }
     }
     public static String[] getList (JsonArray jsArr){
         String [] str = new String[jsArr.size()];
@@ -86,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
             str[i] = jsArr.get(i).getAsJsonObject().get("title").getAsString();
         }
         return str;
+    }
+    public void startAgain (){
+        start = true;
     }
 
     myTask mt;
@@ -110,11 +118,12 @@ public class MainActivity extends AppCompatActivity {
     int DIALOG_DATE1 = 1;
     int DIALOG_DATE2 = 2;
     int myYear1 = 2016;
-    int myMonth1 = 01;
-    int myDay1 = 01;
+    int myMonth1 = 0;
+    int myDay1 = 1;
     int myYear2 = 2016;
-    int myMonth2 = 01;
-    int myDay2 = 01;
+    int myMonth2 = 0;
+    int myDay2 = 1;
+    boolean start = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,10 +138,10 @@ public class MainActivity extends AppCompatActivity {
         tv = (TextView)findViewById(R.id.tv);
         searchbtn = (ImageView)findViewById(R.id.serchbtn);
         search_str = (EditText)findViewById(R.id.search_string);
-        spin_farang = (Spinner)findViewById(R.id.spin_farang);
+        //spin_farang = (Spinner)findViewById(R.id.spin_farang);
         sendForm = (Button)findViewById(R.id.send_form);
-        dateAt = (TextView)findViewById(R.id.dateAt);
-        dateTo = (TextView)findViewById(R.id.dateTo);
+        //dateAt = (TextView)findViewById(R.id.dateAt);
+        //dateTo = (TextView)findViewById(R.id.dateTo);
     }
 
     class myTask extends AsyncTask <Void, Void, Void>{
@@ -144,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             mainReq = getHTML("http://api.h4y.ru/mobile-booking/");
-            ListHotels = getHTML("http://api.h4y.ru/mobile-booking/search?query=");
+            ListHotels = getHTML("http://api.h4y.ru/mobile-booking/search");
             return null;
         }
 
@@ -164,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
                                 });
                 AlertDialog alert = builder.create();
                 alert.show();
+                return;
             }
             else {
                 JsonParser parser = new JsonParser();
@@ -178,28 +188,58 @@ public class MainActivity extends AppCompatActivity {
                 ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(context, R.layout.support_simple_spinner_dropdown_item, hotels);
                 AutoCompleteHotels.setAdapter(adapter2);
 
-                final String[] searchReq = new String[1];
                 final String[] selectNumFarang = new String[1];
                 final View.OnClickListener oclSrchImg = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(MainActivity.this, detailActivity.class);
-                        intent.putExtra("hotelId", getIdFromTitle(js1, AutoCompleteHotels.getText().toString(), "id"));
-                        //intent.putExtra("imageId", getIdFromTitle(js1, AutoCompleteHotels.getText().toString(), "icon"));
-                        startActivity(intent);
-                        //searchReq[0] = search_str.getText().toString();
+                        if(AutoCompleteHotels.getText().toString().length()!=0) {
+                            Intent intent = new Intent(MainActivity.this, detailActivity.class);
+                            intent.putExtra("hotelId", getIdFromTitle(js1, AutoCompleteHotels.getText().toString(), "id"));
+                            intent.putExtra("image", getIdFromTitle(js1, AutoCompleteHotels.getText().toString(), "icon"));
+                            startActivity(intent);
+                        }
+                        else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setTitle("Error")
+                                    .setMessage("Введите название гостиницы")
+                                    .setCancelable(false)
+                                    .setNegativeButton("ОК",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        }
                     }
                 };
                 searchbtn.setOnClickListener(oclSrchImg);
                 View.OnClickListener oclFormBtn = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String cityId = getIdFromTitle(js, AutoCompleteCities.getText().toString(), "id");
-                        selectNumFarang[0] = spin_farang.getSelectedItem().toString();
+                        if (AutoCompleteCities.getText().toString().length()!=0/*&&dateAt.getText().length()!=0&&dateTo.getText().length()!=0*/) {
+                            String cityId = getIdFromTitle(js, AutoCompleteCities.getText().toString(), "id");
+                            //selectNumFarang[0] = spin_farang.getSelectedItem().toString();
 
-                        Intent intent = new Intent(MainActivity.this, search_result.class);
-                        intent.putExtra("cityId", cityId);
-                        startActivity(intent);
+                            Intent intent = new Intent(MainActivity.this, search_result.class);
+                            intent.putExtra("cityId", cityId);
+                            startActivity(intent);
+                        }
+                        else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setTitle("Error")
+                                    .setMessage("Заполните поля \"Город\" и \"Даты\"")
+                                            .setCancelable(false)
+                                            .setNegativeButton("ОК",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int id) {
+                                                            dialog.cancel();
+                                                        }
+                                                    });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        }
                     }
                 };
                 sendForm.setOnClickListener(oclFormBtn);
@@ -234,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
             myYear1 = year;
-            myMonth1 = monthOfYear;
+            myMonth1 = monthOfYear + 1;
             myDay1 = dayOfMonth;
             dateAt.setText(myDay1 + "." + myMonth1 + "." + myYear1);
         }
@@ -243,10 +283,27 @@ public class MainActivity extends AppCompatActivity {
 
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
+
             myYear2 = year;
-            myMonth2 = monthOfYear;
+            myMonth2 = monthOfYear + 1;
             myDay2 = dayOfMonth;
-            dateTo.setText(myDay2 + "." + myMonth2 + "." + myYear2);
+            if(myDay2<=myDay1&&myMonth2==myMonth1&&myYear1==myYear2||myMonth2<myMonth1&&myYear1==myYear2||myYear2<myYear1) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Error")
+                        .setMessage("Дата выезда должна быть позже даты заезда")
+                        .setCancelable(false)
+                        .setNegativeButton("ОК",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+            else {
+                dateTo.setText(myDay2 + "." + myMonth2 + "." + myYear2);
+            }
         }
     };
 }

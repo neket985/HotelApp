@@ -76,6 +76,12 @@ public class detailActivity extends AppCompatActivity {
         String[] mDataSet = new String[countRooms];
         for (int i = 0; i < countRooms; i++) {
             mDataSet[i] = jsArr.get(i).getAsJsonObject().get("title").getAsString();
+            try {
+                mDataSet[i] += "&" + jsArr.get(i).getAsJsonObject().get("icon").getAsString();
+            }
+            catch (Exception e){
+                mDataSet[i] += "&";
+            }
         }
 
         return mDataSet;
@@ -145,7 +151,18 @@ public class detailActivity extends AppCompatActivity {
                         int numRoom = Integer.parseInt(str)/150 - 1;
 
                         Intent intent1 = new Intent(detailActivity.this, detailRoom.class);
-                        intent1.putExtra("roomId", jsArr.get(numRoom).getAsJsonObject().get("id").getAsString());
+                        try {
+                            intent1.putExtra("imageId", jsArr.get(numRoom).getAsJsonObject().get("icon").getAsString());
+                        }
+                        catch (Exception e){
+                            intent1.putExtra("imageId", "");
+                        }
+                        try {
+                            intent1.putExtra("descr", jsArr.get(numRoom).getAsJsonObject().get("description").getAsString());
+                        }
+                        catch (Exception e){
+                            intent1.putExtra("descr", "");
+                        }
                         startActivity(intent1);
                     }
                 });
